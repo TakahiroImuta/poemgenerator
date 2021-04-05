@@ -10,6 +10,23 @@
     <script src="jquery-cropper.js"></script>
   </head>
   <body>
+
+    <p>画像のアップロード</p>
+    <input type="file" id="myImage" accept="image/*">
+    <img id="preview">
+
+    <p>切り抜き前の画像</p>
+    <div class="cropper-area">
+      <!-- <img id="cropper-img"> -->
+      <img id="cropper-img" src="9784088702919.jpg">
+    </div>
+     
+    <button id="crop-btn">切り抜き</button>
+
+    <div class="result">
+      <p>切り抜き後の画像</p>
+      <img id="result-img">
+    </div>
 <!--     <input type="file" id="myImage" accept="image/*">
     <p>切り抜きを行う</p>
     <div class="cropper-area">
@@ -21,33 +38,47 @@
     <div class="result">
       <p>切り抜き後の画像</p>
       <img id="result-img">
-    </div>
- -->
+    </div> -->
 
- <form method="POST" enctype="multipart/form-data">
- <p>画像をアップロードしてください</p>
+
+<!-- <form method="POST" enctype="multipart/form-data">
+  <p>画像をアップロードしてください</p>
   <input type="file" id="profile-image" />
-
-  <img id="select-image" style="max-width:500px;">
+  <img id="select-image" style="max-width:500px;"> -->
 
   <!-- 切り抜き範囲をhiddenで保持する -->
-  <!-- <input type="hidden" id="upload-image-x" name="profileImageX" value="0"/>
+<!--   <input type="hidden" id="upload-image-x" name="profileImageX" value="0"/>
   <input type="hidden" id="upload-image-y" name="profileImageY" value="0"/>
   <input type="hidden" id="upload-image-w" name="profileImageW" value="0"/>
-  <input type="hidden" id="upload-image-h" name="profileImageH" value="0"/> -->
+  <input type="hidden" id="upload-image-h" name="profileImageH" value="0"/>
   <input type="submit" value="アップロード">
-</form>
+</form> -->
 <script>
-  // // アップロードした画像を表示させる
-  // $('#myImage').on('change', function (e) {
-  //     var reader = new FileReader();
-  //     reader.onload = function (e) {
-  //         $("#cropper-img").attr('src', e.target.result);
-  //     }
-  //     reader.readAsDataURL(e.target.files[0]);
-  // });
 
-  // //画像にトリミング加工をする
+  // アップロードした画像を表示させる
+  $('#myImage').on('change', function (e) {
+      var reader = new FileReader();
+      reader.onload = function (e) {
+          $("#preview").attr('src', e.target.result);
+      }
+      reader.readAsDataURL(e.target.files[0]);
+  });
+
+  // クロップし、画像を表示させる
+  var cropperImg = document.getElementById('cropper-img');
+  var cropper = new Cropper(cropperImg,{
+    viewMode: 1,
+    aspectRatio: 16 / 3,
+    zoomOnWheel: false
+  });
+   
+  document.getElementById('crop-btn').addEventListener('click', function () {
+    resultImgUrl = cropper.getCroppedCanvas().toDataURL();
+    var result = document.getElementById('result-img');
+    result.src = resultImgUrl;
+  });
+
+  //画像にトリミング加工をする
   // var cropperImg = document.getElementById('cropper-img');
   // var cropper = new Cropper(cropperImg,{
   //   viewMode: 1,
@@ -59,32 +90,32 @@
   //   result.src = resultImgUrl;
   // });
 
-  $(function(){
-        // 初期設定
-  var options =
-  {
-    aspectRatio: 16 / 3,
-    viewMode:1,
-    crop: function(e) {
-          cropData = $('#select-image').cropper("getData");
-    //       $("#upload-image-x").val(Math.floor(cropData.x));
-    //       $("#upload-image-y").val(Math.floor(cropData.y));
-    //       $("#upload-image-w").val(Math.floor(cropData.width));
-    //       $("#upload-image-h").val(Math.floor(cropData.height));
-    },
-    zoomable:false,
-    minCropBoxWidth:162,
-    minCropBoxHeight:162
-  }
+//   $(function(){
+//         // 初期設定
+//   var options =
+//   {
+//     aspectRatio: 16 / 3,
+//     viewMode:1,
+//     crop: function(e) {
+//           cropData = $('#select-image').cropper("getData");
+//           $("#upload-image-x").val(Math.floor(cropData.x));
+//           $("#upload-image-y").val(Math.floor(cropData.y));
+//           $("#upload-image-w").val(Math.floor(cropData.width));
+//           $("#upload-image-h").val(Math.floor(cropData.height));
+//     },
+//     zoomable:false,
+//     minCropBoxWidth:162,
+//     minCropBoxHeight:162
+//   }
 
-        // 初期設定をセットする
-  $('#select-image').cropper(options);
+//         // 初期設定をセットする
+//   $('#select-image').cropper(options);
 
-  $("#profile-image").change(function(){
-                // ファイル選択変更時に、選択した画像をCropperに設定する
-    $('#select-image').cropper('replace', URL.createObjectURL(this.files[0]));
-  });
-});
+//   $("#profile-image").change(function(){
+//                 // ファイル選択変更時に、選択した画像をCropperに設定する
+//     $('#select-image').cropper('replace', URL.createObjectURL(this.files[0]));
+//   });
+// });
 
   
   </script>

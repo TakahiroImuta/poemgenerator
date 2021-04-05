@@ -8,7 +8,11 @@
  * Date: 2021-02-17T11:53:21.992Z
  */
 
-
+/*追加css*/
+.cropper-area img {
+  display: block;
+  max-width: 100%;
+}
 
 .cropper-container {
   direction: ltr;
