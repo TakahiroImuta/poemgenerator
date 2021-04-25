@@ -1,0 +1,36 @@
+
+body {
+  background-color: #000;
+}
+.container {
+  width: 1200px;
+  height: 1253px;
+  background-color: #fff;
+}
+
+img {
+  width: 1018px;
+  margin: 164px 91px 60px;
+  border: solid 1px #333;
+}
+
+p {
+  -ms-writing-mode: tb-rl;
+  writing-mode: vertical-rl;
+  font-size: 36px;
+  font-family: serif;
+  /*font-family: 'Noto Serif JP', serif;*/
+  /*font-family: 'hannari';*/
+  /*font-family: "Sawarabi Mincho";*/
+  line-height:100px;
+  display: block;
+  margin: 0px auto 0px;
+}
+
+img.gray {
+-webkit-filter: grayscale(100%);
+-moz-filter: grayscale(100%);
+-ms-filter: grayscale(100%);
+-o-filter: grayscale(100%);
+filter: grayscale(100%);
+}

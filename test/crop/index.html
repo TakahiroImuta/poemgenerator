@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!--[if lt IE 9]>
+<script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/r29/html5.min.js"></script>
+<![endif]-->
+<title>Tinny Cropper</title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+</head>
+<body>
+<script src="cropbox.js"></script>
+<div class="container">
+    <p>テキストを入力してください</p>
+    <textarea name="textdate" id="textarea"></textarea>
+
+    <p>画像をアップロードして切り取ってください</p>
+    <div class="imageBox">
+        <div class="thumbBox"></div>
+        <div class="spinner" style="display: none">Loading...</div>
+    </div>
+    <div class="action">
+        <input type="file" id="file" style="float:left; width: 250px;">
+        <input type="button" id="btnCrop" value="画像を切り取る" style="float: right">
+        <input type="button" id="display" value="テキスト表示" style="float: right">
+        <input type="button" id="toimage" value="画像化" style="float: right">
+        <input type="button" id="gray" value="グレー化" style="float: right">
+    </div>
+
+
+    <div id="target">
+        <img src="../images/botan.jpg" alt="" style="width: 100px;">
+        <div class="cropped">
+            
+        </div>
+        <p class="textvalue">ダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト</p>
+    </div>
+  <img src="" id="result"/>
+
+  <a href="" id="ss" download="html_ss.png">スクリーンショット(document.body全体)をダウンロード</a>
+
+
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+
+<script type="text/javascript">
+// 画像切り取り
+    window.onload = function() {
+        var options =
+        {
+            imageBox: '.imageBox',
+            thumbBox: '.thumbBox',
+            spinner: '.spinner',
+            imgSrc: 'avatar.png'
+        }
+        var cropper;
+        document.querySelector('#file').addEventListener('change', function(){
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                options.imgSrc = e.target.result;
+                cropper = new cropbox(options);
+            }
+            reader.readAsDataURL(this.files[0]);
+            this.files = [];
+        })
+        document.querySelector('#btnCrop').addEventListener('click', function(){
+            var img = cropper.getDataURL()
+            document.querySelector('.cropped').innerHTML += '<img src="'+img+'">';
+        })
+        document.querySelector('#btnZoomIn').addEventListener('click', function(){
+            cropper.zoomIn();
+        })
+        document.querySelector('#btnZoomOut').addEventListener('click', function(){
+            cropper.zoomOut();
+        })
+
+    };
+
+// テキストエリアの中身を表示
+    document.getElementById('display').addEventListener('click', function(){
+        $(".textvalue").text($("#textarea").val());
+    })
+
+// 要素の画像化
+    document.getElementById('toimage').addEventListener('click', function(){
+      //HTML内に画像を表示
+      html2canvas(document.getElementById("target"),{
+        onrendered: function(canvas){
+          //imgタグのsrcの中に、html2canvasがレンダリングした画像を指定する。
+          var imgData = canvas.toDataURL();
+          document.getElementById("result").src = imgData;
+        }
+      });
+
+    })
+
+    document.getElementById('gray').addEventListener('click', function(){
+        $("#result").each(function() {
+
+            // キャンバスに画像を描画する
+            var canvas = document.createElement("canvas");
+            var ctx = canvas.getContext("2d");
+            var img = new Image();
+            img.src = $(this).attr("src");
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+
+            // 画像の各ピクセルをグレースケールに変換する
+            var pixels = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            for (var y = 0; y < pixels.height; y++) {
+                for (var x = 0; x < pixels.width; x++) {
+                    var i = (y * 4) * pixels.width + x * 4;
+                    var rgb = parseInt((pixels.data[i] + pixels.data[i + 1] + pixels.data[i + 2]) / 3, 10);
+                    pixels.data[i] = rgb;
+                    pixels.data[i + 1] = rgb;
+                    pixels.data[i + 2] = rgb;
+                }
+            }
+            ctx.putImageData(pixels, 0, 0, 0, 0, pixels.width, pixels.height);
+
+            // 画像を差し替える
+            $(this).attr("src", canvas.toDataURL());
+            var imgData = canvas.toDataURL();
+            document.getElementById("ss").href = imgData;
+
+        });
+    });
+
+
+</script>
+</body>
+</html>
